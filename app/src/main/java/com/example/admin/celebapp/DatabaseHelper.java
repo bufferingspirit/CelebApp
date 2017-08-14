@@ -11,7 +11,7 @@ import java.util.ArrayList;
 public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "MyDatabase";
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 4;
 
     public static final String TABLE_NAME = "Celebs";
     public static final String FIRST_NAME = "FirstNames";
@@ -47,7 +47,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         onCreate(sqLiteDatabase);
     }
 
-    public long saveNewFoodEntry(celebEntry entry) {
+    public long saveNewCelebEntry(celebEntry entry) {
         SQLiteDatabase database = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(FIRST_NAME, entry.getFirstName());

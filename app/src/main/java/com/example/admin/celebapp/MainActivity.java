@@ -6,15 +6,16 @@ import android.widget.Toast;
 
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements ListFragment.OnFragmentInteractionListener{
+public class MainActivity extends AppCompatActivity implements ListFragment.OnFragmentInteractionListener, DataFragment.OnFragmentInteractionListener{
     private static final String DATA_FRAGMENT_TAG = "DataFragment";
     public static final String LIST_FRAGMENT_TAG = "ListFragment";
+    ListFragment foo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        ListFragment foo = new ListFragment();
+        foo = new ListFragment();
         DataFragment bar = new DataFragment();
         getSupportFragmentManager().beginTransaction()
                 .add(R.id.ListFragment, foo, LIST_FRAGMENT_TAG )
@@ -27,9 +28,22 @@ public class MainActivity extends AppCompatActivity implements ListFragment.OnFr
     @Override
     public void onFragmentInteraction(String string) {
         String[] foo = string.split("\\s+");
-        String firstName = foo[0];
-        String lastName = foo[1];
-        startDataFragment(firstName,lastName);
+        if(foo.length > 1) {
+            startDataFragment(foo[0], foo[1]);
+        }
+        else{
+            Toast.makeText(this, "Need A Last Name", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    public void onFragmentInteraction(String name, int flag){
+        if(flag > 0){
+            foo.update(name);
+        }
+        else{
+            foo.remove(name);
+        }
     }
 
     public void startDataFragment(String firstName, String lastName){
@@ -40,6 +54,5 @@ public class MainActivity extends AppCompatActivity implements ListFragment.OnFr
                 .commit();
     }
 
-    //2 Fragments
 
 }

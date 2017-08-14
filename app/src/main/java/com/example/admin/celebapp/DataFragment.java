@@ -22,25 +22,18 @@ public class DataFragment extends Fragment {
 
     private EditText firstName, lastName, height, age, description;
     private Button saveData;
+    private Button deleteData;
+
+    private OnFragmentInteractionListener mListener;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
 
-    //private OnFragmentInteractionListener mListener;
-
     public DataFragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment DataFragment.
-     */
     // TODO: Rename and change types and number of parameters
     public static DataFragment newInstance(String param1, String param2) {
         DataFragment fragment = new DataFragment();
@@ -106,25 +99,29 @@ public class DataFragment extends Fragment {
         String h = height.getText().toString();
         String a = age.getText().toString();
         String des = description.getText().toString();
+        if(!fName.equals("") && !lName.equals("")) {
+            celebEntry entry = new celebEntry(fName, lName, h, a, des, null);
 
-        celebEntry entry = new celebEntry(fName, lName, h, a, des, null);
-
-        DatabaseHelper databaseHelper = new DatabaseHelper(this.getActivity());
-        if(databaseHelper.checkIfEntryExits(fName,lName)){
-            databaseHelper.updateEntry(entry);
-            Toast.makeText(this.getActivity(), "Updated!", Toast.LENGTH_SHORT).show();
-        }
-        else {
-            long saved = databaseHelper.saveNewFoodEntry(entry);
-            if (saved == -1) {
-                Toast.makeText(this.getActivity(), "FAILED", Toast.LENGTH_SHORT).show();
+            DatabaseHelper databaseHelper = new DatabaseHelper(this.getActivity());
+            if (databaseHelper.checkIfEntryExits(fName, lName)) {
+                databaseHelper.updateEntry(entry);
+                mListener.onFragmentInteraction(fName + " " + lName, 1);
             } else {
-                Toast.makeText(this.getActivity(), "Successfully saved!!!", Toast.LENGTH_SHORT).show();
+                long saved = databaseHelper.saveNewCelebEntry(entry);
+                if (saved == -1) {
+                    Toast.makeText(this.getActivity(), "FAILED", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(this.getActivity(), "Successfully saved!!!", Toast.LENGTH_SHORT).show();
+                    mListener.onFragmentInteraction(fName + " " + lName, 1);
+                }
             }
+        }
+        else{
+            Toast.makeText(this.getActivity(), "Need a first and last name to save data", Toast.LENGTH_SHORT).show();
         }
     }
 
-    /*@Override
+    @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         if (context instanceof OnFragmentInteractionListener) {
@@ -139,20 +136,10 @@ public class DataFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
-    }*/
+    }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    /*public interface OnFragmentInteractionListener {
+    public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
-    }*/
+        void onFragmentInteraction(String name, int u_flag);
+    }
 }

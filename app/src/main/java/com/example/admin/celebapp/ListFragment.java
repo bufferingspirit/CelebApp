@@ -42,6 +42,7 @@ public class ListFragment extends Fragment implements AdapterView.OnItemClickLis
     private Button load;
     private ListView lv;
     private ArrayList<String> names;
+    private ArrayAdapter<String> adapter;
 
     private OnFragmentInteractionListener mListener;
 
@@ -91,7 +92,7 @@ public class ListFragment extends Fragment implements AdapterView.OnItemClickLis
         names = new ArrayList<String>();
         populateNameList(names);
 
-        setSelection(names);
+        setSelection();
         lv.setOnItemClickListener(this);
     }
 
@@ -130,15 +131,28 @@ public class ListFragment extends Fragment implements AdapterView.OnItemClickLis
 
     }
 
+    public void update(String name) {
+        names.add(name);
+        adapter.notifyDataSetChanged();
+        Toast.makeText(getActivity(), "Updated", Toast.LENGTH_SHORT).show();
+    }
+
+
+    public void remove(String name) {
+        names.remove(name);
+        adapter.notifyDataSetChanged();
+        Toast.makeText(getActivity(), "Removed", Toast.LENGTH_SHORT).show();
+    }
+
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(String string);
     }
 
-    public void setSelection(ArrayList<String> names){
+    public void setSelection(){
         try {
-            ArrayAdapter<String> adapter = new ArrayAdapter<String>(this.getActivity(),
-                    android.R.layout.simple_list_item_1, names.toArray(new String[0]));
+            adapter = new ArrayAdapter<String>(this.getActivity(),
+                    android.R.layout.simple_list_item_1, names);
             lv.setAdapter(adapter);
         }
         catch (Exception ex){}
